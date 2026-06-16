@@ -1286,5 +1286,37 @@
             });
         });
     </script>
+
+    <!-- Analytics tracking -->
+    <script>
+        (function () {
+            const API = '/api/track';
+
+            function fire(type) {
+                fetch(API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type }),
+                    keepalive: true,
+                }).catch(function () { /* silently fail */ });
+            }
+
+            // Track page view — once per session
+            try {
+                if (!sessionStorage.getItem('tdr_pv')) {
+                    sessionStorage.setItem('tdr_pv', '1');
+                    fire('pageview');
+                }
+            } catch (e) { /* sessionStorage unavailable */ }
+
+            // Track clicks on any Gumroad link
+            document.addEventListener('click', function (e) {
+                var link = e.target.closest('a');
+                if (link && link.href.indexOf('gumroad.com') !== -1) {
+                    fire('click');
+                }
+            }, true);
+        })();
+    </script>
 </body>
 </html>

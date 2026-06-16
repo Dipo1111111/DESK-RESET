@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Desk Reset - Premium Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #FFFFFF;
+            --text-color: #0F172A;
+            --accent-color: #065F46; /* Deep Forest Green */
+            --accent-soft: #F0FDF4;
+            --neutral-soft: #F8FAFC;
+            --border-color: #E2E8F0;
+            --max-width: 760px;
+            --line-height: 1.7;
+            --body-font: 'Inter', system-ui, sans-serif;
+            --heading-font: 'Sora', sans-serif;
+        }
+
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            section {
+                break-inside: avoid;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--body-font);
+            font-size: 18px;
+            line-height: var(--line-height);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 8rem 2rem;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: var(--heading-font);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 2rem;
+            color: var(--text-color);
+        }
+
+        h1 { font-size: 44px; margin-bottom: 1rem; }
+        h2 { font-size: 32px; margin-top: 6rem; }
+        h3 { font-size: 24px; margin-top: 3rem; }
+
+        .subtitle {
+            font-size: 20px;
+            color: var(--accent-color);
+            margin-bottom: 4rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+        }
+
+        strong {
+            font-weight: 600;
+        }
+
+        /* Lists */
+        ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        /* Cards/Callouts */
+        .card {
+            background-color: var(--neutral-soft);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin: 4rem 0;
+            break-inside: avoid;
+        }
+
+        .callout {
+            background-color: var(--accent-soft);
+            border-left: 4px solid var(--accent-color);
+            padding: 2rem;
+            margin: 3rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .exercise-card {
+            border: 2px solid var(--accent-color);
+            background-color: #fff;
+            padding: 3rem;
+            margin: 4rem 0;
+            border-radius: 16px;
+        }
+
+        .exercise-title {
+            font-family: var(--heading-font);
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Quotes */
+        .quote {
+            text-align: center;
+            font-family: var(--heading-font);
+            font-size: 32px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin: 8rem 0;
+            padding: 0 2rem;
+            color: var(--text-color);
+            letter-spacing: -0.02em;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 3rem 0;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1.25rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--neutral-soft);
+            font-family: var(--heading-font);
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: #FAFAFA;
+        }
+
+        /* Divider */
+        hr {
+            border: none;
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 8rem 0;
+        }
+
+        /* Image Brief */
+        .image-brief {
+            background-color: #FAFAFA;
+            border: 1px dashed #CBD5E1;
+            padding: 2rem;
+            margin: 4rem 0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #64748B;
+        }
+
+        .image-brief-label {
+            font-weight: 800;
+            color: var(--text-color);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .image-brief b {
+            color: var(--text-color);
+        }
+
+        /* Code/Diagram */
+        pre {
+            background-color: var(--text-color);
+            color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 3rem 0;
+            overflow-x: auto;
+        }
+
+        /* Page Headers */
+        header {
+            margin-bottom: 8rem;
+            text-align: center;
+        }
+
+        .page-header {
+            page-break-before: always;
+            padding-top: 4rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cover -->
+        <header>
+            <div class="image-brief">
+                <span class="image-brief-label">Image Brief</span>
+                <b>Purpose:</b> Hero Photograph for cover page.<br>
+                <b>Composition:</b> Symmetrical view of a minimalist home office. Clean desk, natural light, one green plant.<br>
+                <b>Visual Style:</b> Clean, high-end editorial, bright exposure.<br>
+                <b>Lighting:</b> Morning soft sunlight through a window.<br>
+                <b>Generation Prompt:</b> "Minimalist aesthetic home office setup morning light professional ergonomic desk setup forest green accents Hasselblad photography --ar 16:9"
+            </div>
+            <h1>THE DESK RESET</h1>
+            <div class="subtitle">The 10-Minute System to Fix Desk Pain Without Leaving Your Job</div>
+        </header>
+
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>If you spend your day writing code, designing interfaces, managing projects, or studying, you are likely intimately familiar with a specific kind of physical exhaustion. It is the deep ache in your lower back at 3:00 PM, the persistent tightness in your neck that makes you roll your head from side to side, and the stiffness in your hips that makes your first few steps after standing up feel incredibly heavy.</p>
+            <p>Many people in their twenties and thirties say they feel twice their age. They assume this is simply the tax they must pay for working a modern, screen-based job.</p>
+            <p>This guide is built on a different premise: you do not need to quit your desk job to live without pain, nor do you need to spend hours at the gym undoing the effects of your workday. Your body adapts to the positions you hold most frequently. If you sit for eight to ten hours a day in a slumped position, your nervous system and muscles optimize for that shape.</p>
+            <p>To fix desk pain, you do not need radical change. You need targeted, consistent input that tells your nervous system to reset. This book provides a structured, progressive system that requires just ten minutes of your day, split into manageable blocks.</p>
+
+            <div class="callout">
+                <strong>A Note on Health and Safety</strong><br>
+                The information in this book is for educational purposes. It is not a substitute for professional medical advice, diagnosis, or treatment. If you experience sharp, shooting pain, numbness, tingling, or pain that worsens progressively, consult a qualified healthcare professional or physiotherapist for an individualized assessment.
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="why-sitting-hurts" class="page-header">
+            <h2>Why Sitting Hurts</h2>
+            <div class="image-brief">
+                <span class="image-brief-label">Image Brief</span>
+                <b>Purpose:</b> Posture Diagram.<br>
+                <b>Composition:</b> Profile side-view of a person sitting. One side shows slouched posture (red lines), the other shows neutral (green lines).<br>
+                <b>Visual Style:</b> Minimalist vector art, thin lines, premium aesthetic.<br>
+                <b>Generation Prompt:</b> "Minimalist vector illustration sitting posture diagram slouched vs healthy neutral spine ergonomics high contrast white background"
+            </div>
+            <p>To solve desk pain, you must first understand the mechanism behind it. Your body is an efficient, adaptive system. It operates on a principle of economy: muscles that are not used are allowed to become weak, and muscles that are held in a shortened state eventually lose their functional length.</p>
+            <p>When you sit at a desk and look at a monitor, your body adopts a predictable structural pattern:</p>
+            <ul>
+                <li>Your pelvis tilts backward or forward excessively, changing the curve of your lower spine.</li>
+                <li>Your hip flexors remain in a compressed, shortened position.</li>
+                <li>Your glutes, the largest muscle group in your lower body, are mechanically turned off because you are sitting on them.</li>
+                <li>Your upper back rounds forward to bring your hands closer to your keyboard.</li>
+                <li>Your head shifts forward to bring your eyes closer to the screen, placing immense mechanical stress on the small muscles at the base of your skull.</li>
+            </ul>
+
+            <h3>The Real Problem: Cumulative Tissue Loading</h3>
+            <p>The primary reason sitting causes discomfort is not that sitting is inherently dangerous. The problem is cumulative static loading. When you move, your muscles pump blood and nutrients through your tissues. When you sit completely still for hours, blood flow slows down, metabolic waste products accumulate, and your tissues experience constant, unyielding pressure.</p>
+            <p>Consider your lower back. When you sit with a rounded spine, the ligaments and discs in your lumbar region are placed under continuous tension. Over time, this triggers a protective response from your nervous system. Your brain perceives this constant strain as a threat and signals the surrounding muscles to tighten up to protect the area. The stiffness you feel is not necessarily structural damage: it is often a neurological brake applied by your own brain.</p>
+
+            <div class="card">
+                <h3>Common Mistakes</h3>
+                <ul>
+                    <li><strong>Trying to sit perfectly straight all day:</strong> Maintaining a rigid, military-style posture requires intense muscle contraction. If you try to hold this position for eight hours, you will simply fatigue a different set of muscles, leading to a new pattern of pain.</li>
+                    <li><strong>Ignoring the early warning signs:</strong> Mild stiffness at the end of the day is an early warning signal. Ignoring it allows the movement patterns to become deeply ingrained.</li>
+                </ul>
+            </div>
+
+            <div class="callout">
+                <strong>Key Takeaways</strong><br>
+                <ul>
+                    <li>Desk pain is an adaptive response to prolonged, static positions.</li>
+                    <li>Stiffness is often your brain's way of creating artificial stability when your muscles are inactive.</li>
+                    <li>Movement variety is far more valuable than trying to maintain a single, rigid posture all day.</li>
+                </ul>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="why-stretching-fails" class="page-header">
+            <h2>Why Stretching Alone Fails</h2>
+            <p>When people first notice their lower back is tight or their shoulders are rounded, their instinctual response is to stretch. They spend five minutes reaching for their toes or pulling their arms across their chest. While static stretching can feel pleasant in the moment, it rarely provides long-term relief for desk workers.</p>
+            
+            <h3>The Illusion of Relief</h3>
+            <p>When you stretch a tight muscle and hold it for thirty seconds, you trigger a temporary neurological reaction called the stretch reflex attenuation. This temporarily lowers the muscle's resistance to elongation, making it feel looser for a short period. However, you have not changed the underlying reason why the brain made that muscle tight in the first place.</p>
+            <p>Within an hour of returning to your desk, the tightness returns. This happens because stretching only addresses the length of the muscle: it does not address control, stability, or strength.</p>
+
+            <div class="image-brief">
+                <span class="image-brief-label">Image Brief</span>
+                <b>Purpose:</b> Conceptual Infographic.<br>
+                <b>Composition:</b> A visual metaphor of "guy-wires" on a tent pole. One set is loose, causing the other to be tight.<br>
+                <b>Visual Style:</b> Minimalist line art, monochrome with one accent color.<br>
+                <b>Generation Prompt:</b> "Minimalist biomechanics infographic guy wires tent pole metaphor stability mobility concept vector art"
+            </div>
+
+            <h3>The Stability-Mobility Loop</h3>
+            <p>Your body operates on a balance of mobility and stability. If a joint lacks stability, the nervous system will stiffen the surrounding muscles to compensate.</p>
+            <p>For example, many desk workers suffer from tight hamstrings. They stretch their hamstrings daily, yet the tightness never goes away. Why? Because their core and glutes are inactive during the workday. The brain commands the hamstrings to stay tight to prevent the pelvis from shifting out of place. Stretching the hamstrings in this scenario removes the only form of stability the body has left, causing the brain to lock the area down even tighter.</p>
+
+            <pre>
+THE VICIOUS STRETCHING CYCLE
+1. Inactive Glutes/Core
+2. Brain stiffens Hamstrings for stability
+3. You aggressively stretch Hamstrings
+4. Body loses temporary stability
+5. Brain locks down Hamstrings tighter</pre>
+
+            <div class="callout">
+                <strong>Key Takeaways</strong><br>
+                <ul>
+                    <li>Static stretching provides transient, neurological relief without changing movement habits.</li>
+                    <li>Muscle tightness is frequently a compensation strategy for weakness elsewhere.</li>
+                    <li>True resolution requires a combination of tissue release, joint mobility, and targeted muscular activation.</li>
+                </ul>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="reset-framework" class="page-header">
+            <h2>The RESET Framework</h2>
+            <p>To build a reliable system for desk pain, we must move away from random exercises and adopt a structured sequence. The system used in this book relies on four distinct phases: <strong>Reset, Mobilize, Strengthen, and Sustain.</strong></p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Core Objective</th>
+                        <th>Primary Target</th>
+                        <th>Practical Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Reset</strong></td>
+                        <td>Interrupt static tension</td>
+                        <td>Nervous system</td>
+                        <td>Positional decompression</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mobilize</strong></td>
+                        <td>Restore joint movement</td>
+                        <td>Hips, upper back</td>
+                        <td>Thoracic extensions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Strengthen</strong></td>
+                        <td>Lock in new mobility</td>
+                        <td>Glutes, upper back</td>
+                        <td>Glute bridges, chin tucks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sustain</strong></td>
+                        <td>Prevent regression</td>
+                        <td>Work environment</td>
+                        <td>Ergonomic tweaks, walking</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Phase 1: Reset</h3>
+            <p>The first step is to break the static cycle. This means introducing a physical interruption to change the neural inputs your brain receives. Before you try to strengthen or mobilize a tissue, you must signal to your nervous system that it is safe to let go of defensive tension.</p>
+
+            <h3>Phase 2: Mobilize</h3>
+            <p>Once the nervous system has calmed down, we introduce gentle, active joint mobilization. We target the specific areas that become restricted during desk work: the thoracic spine (upper back), the glenohumeral joints (shoulders), and the acetabular joints (hips).</p>
+
+            <h3>Phase 3: Strengthen</h3>
+            <p>Mobility without strength is useless. Once we open up a new range of motion, we must immediately build strength in that new space. This teaches the brain that the new position is safe and controllable.</p>
+
+            <h3>Phase 4: Sustain</h3>
+            <p>The final phase integrates these changes into your daily life. It involves optimizing your physical environment, altering how you move through space, and building small, automated triggers.</p>
+        </section>
+
+        <hr>
+
+        <section id="morning-reset" class="page-header">
+            <h2>Morning Reset (5 Minutes)</h2>
+            <p>The goal of the Morning Reset is to prepare your body for the upcoming period of stillness. When you wake up, your tissues are naturally dehydrated and stiff from hours of relative immobility. This five-minute sequence acts as a physical primer.</p>
+            
+            <div class="exercise-card">
+                <div class="exercise-title">01. Decompression Breathing</div>
+                <ul>
+                    <li><strong>Starting Position:</strong> Lie flat on your back on the floor with your knees bent and feet flat on the ground. Place one hand on your chest and one on your belly.</li>
+                    <li><strong>Movement:</strong> Inhale deeply through your nose for four seconds, ensuring your belly rises while your chest stays relatively still. Hold for two seconds, then exhale slowly through your mouth for six seconds.</li>
+                </ul>
+                <div class="callout">
+                    <strong>Why it works:</strong> This diaphragmatic breathing down-regulates the sympathetic nervous system and decompresses the lumbar spine by coordinating intra-abdominal pressure.
+                </div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="exercise-title">02. The Cat-Cow Flow</div>
+                <ul>
+                    <li><strong>Starting Position:</strong> Move onto your hands and knees on a comfortable mat. Keep your hands directly under your shoulders and knees under your hips.</li>
+                    <li><strong>Movement:</strong> Slowly inhale as you let your belly drop toward the floor, lifting your gaze slightly. As you exhale, push the floor away, rounding your spine up toward the ceiling and tucking your chin.</li>
+                    <li><strong>Execution Note:</strong> Do not force the end ranges. Focus on moving one vertebra at a time. Perform this for two full minutes.</li>
+                </ul>
+            </div>
+
+            <div class="image-brief">
+                <span class="image-brief-label">Image Brief</span>
+                <b>Purpose:</b> Demonstration of Cat-Cow form.<br>
+                <b>Composition:</b> Side-by-side shots of the 'Cat' (rounded back) and 'Cow' (dropped belly) positions.<br>
+                <b>Visual Style:</b> Clean photography, high-key lighting, minimalist workout attire.<br>
+                <b>Generation Prompt:</b> "Professional fitness photography cat cow exercise demonstration minimalist studio background morning reset"
+            </div>
+
+            <div class="exercise-card">
+                <div class="exercise-title">03. The Glute Bridge Activation</div>
+                <ul>
+                    <li><strong>Starting Position:</strong> Return to lying on your back with your knees bent at ninety degrees, feet flat on the floor, spaced hip-width apart.</li>
+                    <li><strong>Movement:</strong> Drive through your heels to lift your hips toward the ceiling until your body forms a straight line from your knees to your shoulders. Squeeze your glutes firmly at the top for two seconds, then lower down under control.</li>
+                </ul>
+                <pre>
+GLUTE BRIDGE ALIGNMENT
+(Hips high, ribs down, glutes squeezed)
+
+      O  [Shoulders on floor]
+     / \
+    /   \
+   /     \_____ O [Knees at 90°]
+  /             |
+ /              | [Feet flat]</pre>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="midday-reset" class="page-header">
+            <h2>Midday Reset (3 Minutes)</h2>
+            <p>The Midday Reset is your defense against cumulative working tension. It is designed to be performed directly at your workstation without requiring a change of clothes or specialized equipment.</p>
+
+            <div class="exercise-card">
+                <div class="exercise-title">01. The Seated Box-Car Opener</div>
+                <ul>
+                    <li><strong>Starting Position:</strong> Sit on the edge of your chair with your feet flat on the floor. Interlock your fingers behind your head, keeping your elbows wide.</li>
+                    <li><strong>Movement:</strong> Gently lean backward over the top of your chair's backrest, letting your elbows open wide and your chest point toward the ceiling. Hold the top position for two seconds, then return to neutral. Repeat ten times.</li>
+                </ul>
+            </div>
+
+            <div class="exercise-card">
+                <div class="exercise-title">02. The Bruegger Relief Position</div>
+                <ul>
+                    <li><strong>Starting Position:</strong> Sit upright away from the backrest of your chair.</li>
+                    <li><strong>Movement:</strong> Extend your arms down by your sides. Rotate your palms outward so they face forward, spreading your fingers wide. Tuck your chin slightly and pull your shoulder blades gently down and back.</li>
+                </ul>
+                <div class="callout">
+                    <strong>Quick Tip:</strong> Set a recurring silent alarm for 1:00 PM. Treat this three-minute block as an unalterable meeting with your body.
+                </div>
+            </div>
+
+            <div class="image-brief">
+                <span class="image-brief-label">Image Brief</span>
+                <b>Purpose:</b> Desk-side exercise demonstration.<br>
+                <b>Composition:</b> A professional in business casual performing the Bruegger relief position in a modern office.<br>
+                <b>Visual Style:</b> Lifestyle photography, bright and airy.<br>
+                <b>Generation Prompt:</b> "Professional performing bruegger relief position at ergonomic desk modern high-end office lifestyle photography"
+            </div>
+
+            <div class="exercise-card">
+                <div class="exercise-title">03. The Desk Edge Wrist Release</div>
+                <ul>
+                    <li><strong>Starting Position:</strong> Stand up and face your desk. Place your palms flat on the desk surface with your fingers pointing backward toward your body.</li>
+                    <li><strong>Movement:</strong> Keeping your elbows straight, gently lean your body weight backward until you feel a comfortable stretch along the front of your forearms.</li>
+                </ul>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="evening-reset" class="page-header">
+            <h2>Evening Reset (2 Minutes)</h2>
+            <p>The Evening Reset is designed to signal to your body that the workday is officially over. The primary objective here is tissue decompression and transitioning your nervous system out of work mode.</p>
+
+            <div class="exercise-card">
+                <div class="exercise-title">01. The Psoas Couch Stretch</div>
+                <ul>
+                    <li><strong>Starting Position:</strong> Kneel with your right knee on a pillow close to a couch. Place your left foot forward at a ninety-degree angle.</li>
+                    <li><strong>Movement:</strong> Place your back foot up against the couch. Squeeze your right glute tightly to tilt your pelvis backward. You should feel a profound stretch along the front of your right hip.</li>
+                </ul>
+                <pre>
+THE COUCH STRETCH
+         
+[Wall/Couch]
+    |   | Torso Upright
+    |   |
+    |   +---O (Hips tilted back)
+    |  / \
+    | /   \
+    |/     \_____ O [Front Knee]
+    #             |
+ [Pillow]         | [Foot Flat]</pre>
+            </div>
+
+            <div class="exercise-card">
+                <div class="exercise-title">02. Supine Restorative Extension</div>
+                <ul>
+                    <li><strong>Starting Position:</strong> Roll up a bath towel tightly. Lie flat on your back and place the towel horizontally beneath your upper back, across the shoulder blades.</li>
+                    <li><strong>Movement:</strong> Extend your arms like the letter T, palms up. Close your eyes and breathe naturally for one full minute, letting your chest open over the towel.</li>
+                </ul>
+            </div>
+        </section>
+
+        <hr>
+        
+        <section id="desk-setup" class="page-header">
+            <h2>Desk Setup Guide</h2>
+            <p>No amount of daily exercise can overcome an environment that actively works against your anatomy. You must configure your existing furniture to fit your physical dimensions.</p>
+
+            <div class="image-brief">
+                <span class="image-brief-label">Image Brief</span>
+                <b>Purpose:</b> Ergonomic Workspace Diagram.<br>
+                <b>Composition:</b> 3D model or technical illustration of a workstation with angle labels (90° degrees at elbows, hips, knees).<br>
+                <b>Visual Style:</b> Clean blueprint style, architectural aesthetic.<br>
+                <b>Generation Prompt:</b> "Technical illustration ergonomic desk setup dimensions 90 degree angles blueprint style architectural minimalist"
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">Ergonomic Baseline Checklist</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Screen Top</strong></td>
+                        <td>Level with eyes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Elbows</strong></td>
+                        <td>90 to 100 degrees, close to torso</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hips vs Knees</strong></td>
+                        <td>Hips positioned slightly higher than knees</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Feet</strong></td>
+                        <td>Flat and supported</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Common Mistakes</h3>
+            <ul>
+                <li><strong>Using a laptop directly on your lap or desk:</strong> This forces your cervical spine into continuous flexion, leading to tension headaches.</li>
+                <li><strong>Leaning forward toward the screen:</strong> This is often a sign of eye strain. Bring your monitor closer rather than moving your face closer.</li>
+            </ul>
+        </section>
+
+        <hr>
+
+        <section id="walking-strategy" class="page-header">
+            <h2>Walking Strategy</h2>
+            <p>We often view walking as an aerobic exercise, but for desk workers, its primary value is structural. Walking is a dynamic reset for the entire body, restoring normal tissue length and joint mechanics.</p>
+
+            <div class="quote">
+                "For every ninety minutes of continuous desk work, stand up and walk for exactly two minutes."
+            </div>
+
+            <h3>The Physics of the Stride</h3>
+            <p>When you walk with an efficient stride, your hips extend completely behind your body with every step. This movement lengthens the hip flexor muscles that are compressed while sitting. The alternating movement of your arms creates a natural rotational forces across your spine, hydrating the spinal discs.</p>
+
+            <div class="card">
+                <h3>The Accumulative Method</h3>
+                <ul>
+                    <li><strong>The 90-Minute Rule:</strong> Set a timer. Every 90 minutes, walk for 2 minutes down the hallway or simply in place.</li>
+                    <li><strong>The Post-Meal Stride:</strong> Dedicate ten minutes immediately following your lunch break to an outdoor walk.</li>
+                </ul>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="sleep-position" class="page-header">
+            <h2>Sleep Position Guide</h2>
+            <p>You spend roughly one-third of your life in bed. If your sleeping posture places your spine under mechanical stress, you will start your day with structural tension.</p>
+
+            <div class="image-brief">
+                <span class="image-brief-label">Image Brief</span>
+                <b>Purpose:</b> Sleep alignment illustration.<br>
+                <b>Composition:</b> Vector illustration showing side and back sleeping views with pillow placement highlights.<br>
+                <b>Visual Style:</b> Soft, minimalist, calming tones.<br>
+                <b>Generation Prompt:</b> "Ergonomic sleep positions vector illustration side and back sleeping pillow placement spine alignment"
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="3">Sleep Alignment Matrix</th>
+                    </tr>
+                    <tr>
+                        <th>Position</th>
+                        <th>Head Pillow</th>
+                        <th>Secondary Pillow</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Side</strong></td>
+                        <td>Medium (fill gap)</td>
+                        <td>Small pillow between knees</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Back</strong></td>
+                        <td>Low-profile</td>
+                        <td>Medium pillow under knees</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stomach</strong></td>
+                        <td>None</td>
+                        <td>Flat pillow under pelvis</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <hr>
+
+        <section id="progress-tracker" class="page-header">
+            <h2>Weekly Progress Tracker</h2>
+            <p>Consistency is the only metric that matters. Use this simple template to evaluate your status at the end of every week. Rate these markers on a scale of 1 to 5.</p>
+
+            <div class="exercise-card">
+                <div class="exercise-title">Checklist: Weekly Evaluation</div>
+                <ul>
+                    <li><strong>Mid-Afternoon Stiffness:</strong> How free of tension do your lower back and neck feel at 3:00 PM?</li>
+                    <li><strong>Morning Transit:</strong> How easy and loose do your first ten steps out of bed feel?</li>
+                    <li><strong>Task Focus:</strong> How long can you work before physical discomfort distracts you?</li>
+                </ul>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="faqs" class="page-header">
+            <h2>FAQs</h2>
+            
+            <h3>My lower back hurts when I sit upright. Should I lean back?</h3>
+            <p>Yes. Sitting at a strict ninety-degree angle increases the mechanical pressure on your lumbar spine. A slightly reclined sitting position (100° to 110°) reduces intradiscal pressure, provided your chair supports your lower back properly.</p>
+
+            <h3>Can I just use a standing desk instead of these exercises?</h3>
+            <p>A standing desk is a useful tool, but not a complete cure. The core principle remains unchanged: movement variety beats static stability every time. Alternate between sitting and standing every 45 to 60 minutes.</p>
+        </section>
+
+        <hr>
+
+        <section id="month-plan" class="page-header">
+            <h2>30-Day Plan</h2>
+            <div class="card">
+                <p><strong>Week 1:</strong> Environmental Optimization & Reset Mechanics. Morning Reset mandatory.</p>
+                <p><strong>Week 2:</strong> Neurological Habituation. Add Midday Reset at 1:00 PM.</p>
+                <p><strong>Week 3:</strong> Deep Tissue Lengthening. Add Evening Reset (2 minutes).</p>
+                <p><strong>Week 4:</strong> Stabilization & Long-Term Sustainability. Combine all three routines.</p>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="conclusion" class="page-header">
+            <h2>Conclusion</h2>
+            <p>Physical comfort is not an unattainable luxury reserved for people who work outdoors or manual laborers. It is a direct result of how you manage your body's structural inputs throughout the day.</p>
+            <p>By dedicating just ten minutes a day to resetting your posture, mobilizing your joints, and activating your supportive muscles, you change the message your brain sends to your body.</p>
+            <p>Treat your physical health with the same care and professional focus that you apply to your daily work. Your body will reward you with clarity, energy, and total freedom from discomfort.</p>
+        </section>
+
+        <footer>
+            <div class="image-brief">
+                <span class="image-brief-label">Image Brief</span>
+                <b>Purpose:</b> Final premium seal/logo.<br>
+                <b>Composition:</b> A minimalist circular seal with "THE DESK RESET" and a stylized spine icon.<br>
+                <b>Visual Style:</b> Gold foil effect or embossed slate texture.<br>
+                <b>Generation Prompt:</b> "Minimalist luxury logo seal for health book stylized spine icon gold foil on slate background professional"
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

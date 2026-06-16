@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Desk Reset — Radical Editorial Studio</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@300;800&display=swap" rel="stylesheet">
+    
+    <!-- Dependencies for Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <style>
+        :root {
+            /* Neural Pathway Palette */
+            --oat: #F2EFE8;
+            --obsidian: #0D0D0D;
+            --crimson: #E63946;
+            --stone: #A8A7A3;
+            --clay: #D98359;
+            
+            /* Dimensions (300 DPI A4) */
+            --page-width: 2480px;
+            --page-height: 3508px;
+            
+            /* Abstract Grid System */
+            --margin-x: 180px;
+            --margin-y: 200px;
+            
+            /* UI Scale (for browser viewing) */
+            --zoom: 0.25; 
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: #222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(circle at 50% 50%, #333 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Design Studio Toolbar */
+        .toolbar {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 100;
+            background: var(--obsidian);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            display: flex;
+            gap: 1rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn {
+            background: var(--crimson);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .btn:hover { 
+            transform: translateY(-2px);
+            background: #ff4d5a;
+        }
+
+        .ebook-editor {
+            display: flex;
+            flex-direction: column;
+            gap: 6rem;
+            zoom: var(--zoom); /* Proper scaling to remove bottom dead space */
+        }
+
+        /* The Page Artboard */
+        .page {
+            position: relative;
+            width: var(--page-width);
+            height: var(--page-height);
+            background-color: var(--oat);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-column-gap: 60px;
+            padding: var(--margin-y) var(--margin-x);
+        }
+
+        .page.dark {
+            background-color: var(--obsidian);
+            color: var(--oat);
+        }
+
+        .page.red {
+            background-color: var(--crimson);
+            color: var(--oat);
+        }
+
+        /* Abstract Typography */
+        h1.neural-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 380px;
+            line-height: 0.85;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            color: var(--obsidian);
+            word-wrap: break-word;
+        }
+
+        h2.section-header {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 200px;
+            line-height: 0.9;
+            letter-spacing: -0.03em;
+            color: inherit;
+        }
+
+        .eyebrow {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 44px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--crimson);
+            margin-bottom: 2rem;
+            display: block;
+        }
+        
+        .page.red .eyebrow { color: var(--obsidian); }
+        .page.dark .eyebrow { color: var(--crimson); }
+
+        p.lead {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 300;
+            font-size: 55px;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+            margin-bottom: 4rem;
+        }
+
+        p.body-text {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 50px;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .number-mark {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 900;
+            font-size: 600px;
+            line-height: 0.8;
+            letter-spacing: -0.05em;
+            position: absolute;
+            z-index: 0;
+            opacity: 0.05;
+        }
+
+        /* Abstract UI Elements */
+        .image-required {
+            background-color: var(--stone);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .image-required::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(0,0,0,0.05) 20px,
+                rgba(0,0,0,0.05) 40px
+            );
+        }
+
+        .img-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 42px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: white;
+            z-index: 2;
+            mix-blend-mode: difference;
+        }
+
+        /* Footer / Folio - simplified to avoid overlapping borders */
+        .folio {
+            position: absolute;
+            bottom: var(--margin-y);
+            left: var(--margin-x);
+            right: var(--margin-x);
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 44px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding-top: 1rem;
+            z-index: 10;
+        }
+
+        /* --- SPECIFIC PAGE LAYOUTS --- */
+
+        /* P1: Cover */
+        #p1 .neural-title {
+            grid-column: 1 / 13;
+            margin-top: 10rem;
+            position: relative;
+            z-index: 2;
+            color: var(--oat);
+        }
+        #p1 .cover-img {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 75%;
+            height: 60%;
+            z-index: 1;
+        }
+        
+        /* P2: Table of Contents */
+        .toc-grid {
+            grid-column: 1 / 13;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            row-gap: 80px;
+            column-gap: 120px;
+            margin-top: 8rem;
+        }
+        .toc-item {
+            border-top: 8px solid var(--obsidian);
+            padding-top: 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 4rem;
+        }
+        .toc-num {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 140px;
+            line-height: 0.8;
+            color: var(--crimson);
+        }
+        .toc-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .toc-title {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 56px;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+        .toc-desc {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 44px;
+            color: var(--stone);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <button class="btn" onclick="exportPNGs()">Export PNGs (300 DPI)</button>
+    </div>
+
+    <div class="ebook-editor" id="ebook-editor">
+        
+        <!-- PAGE 1: ABSTRACT COVER -->
+        <div class="page red" id="p1" style="padding: 0;">
+            <div style="position: absolute; top: var(--margin-y); left: var(--margin-x); z-index: 2;">
+                <span class="eyebrow" style="color: var(--obsidian);">A Methodology For</span>
+            </div>
+            
+            <div style="padding: var(--margin-y) var(--margin-x); width: 100%; height: 100%;">
+                <h1 class="neural-title">THE<br>DESK<br>RESET.</h1>
+                
+                <div style="position: absolute; bottom: var(--margin-y); left: var(--margin-x); width: 1000px; z-index: 10;">
+                    <p style="font-family: 'Plus Jakarta Sans'; font-size: 64px; font-weight: 300; line-height: 1.2;">The 10-Minute System to Fix Desk Pain Without Leaving Your Job.</p>
+                </div>
+            </div>
+
+            <div class="cover-img" style="position: absolute; bottom: 0; right: 0; width: 75%; height: 60%; z-index: 1; background: url('cover-hero-home-office.jpg') center/cover no-repeat;"></div>
+            
+            <!-- Abstract decorative elements completely removed to avoid conflicting with grids/folios -->
+        </div>
+
+        <!-- PAGE 2: TABLE OF CONTENTS (ARCHITECTURAL) -->
+        <div class="page" id="p2">
+            <div style="grid-column: 1 / 13;">
+                <h2 class="section-header" style="font-size: 160px;">CONTENTS.</h2>
+            </div>
+            
+            <div class="toc-grid">
+                <div class="toc-item">
+                    <div class="toc-num">01</div>
+                    <div class="toc-text">
+                        <span class="toc-title">Introduction</span>
+                        <span class="toc-desc">The reality of the modern workday and why your body is protesting.</span>
+                    </div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-num">02</div>
+                    <div class="toc-text">
+                        <span class="toc-title">The Mechanism</span>
+                        <span class="toc-desc">Sitting for hours, and why your body stiffens up.</span>
+                    </div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-num">03</div>
+                    <div class="toc-text">
+                        <span class="toc-title">The Fallacy</span>
+                        <span class="toc-desc">Why stretching tight muscles doesn't work.</span>
+                    </div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-num">04</div>
+                    <div class="toc-text">
+                        <span class="toc-title">The Routines</span>
+                        <span class="toc-desc">Morning, Midday, and Evening 10-minute routines.</span>
+                    </div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-num">05</div>
+                    <div class="toc-text">
+                        <span class="toc-title">The Environment</span>
+                        <span class="toc-desc">Setting up your desk and proper sleep posture.</span>
+                    </div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-num">06</div>
+                    <div class="toc-text">
+                        <span class="toc-title">The Core Audit</span>
+                        <span class="toc-desc">A 30-day tracker to measure your progress.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="position: absolute; right: var(--margin-x); top: var(--margin-y); width: 700px; height: 520px; background: url('toc-abstract-graphic.jpg') center/contain no-repeat;" role="img" aria-label="Abstract graphic"></div>
+
+            <div class="folio">
+                <span>The Desk Reset</span>
+                <span>Contents</span>
+                <span>02</span>
+            </div>
+        </div>
+
+        <!-- PAGE 3: THE EVIDENCE -->
+        <div class="page dark" id="p_evidence">
+            <div style="grid-column: 2 / 12; padding-top: 10rem;">
+                <span class="eyebrow" style="color: var(--crimson);">Built on Research</span>
+                <h2 class="section-header" style="font-size: 160px; line-height: 0.85; color: var(--oat);">THE<br>EVIDENCE.</h2>
+
+                <p class="body-text" style="color: var(--stone); margin-top: 4rem; max-width: 1100px;">Every protocol in this guide is grounded in established research from pain neuroscience, motor control, biomechanics, and occupational ergonomics. This is not opinion — it is applied science.</p>
+
+                <div style="margin-top: 6rem; display: grid; grid-template-columns: 1fr 1fr; gap: 60px;">
+                    <div>
+                        <div style="border-left: 6px solid var(--crimson); padding-left: 2.5rem; margin-bottom: 4rem;">
+                            <span style="font-family: 'Plus Jakarta Sans'; font-size: 42px; font-weight: 800; color: var(--crimson); display: block;">PAIN NEUROSCIENCE</span>
+                            <p class="body-text" style="color: var(--oat); margin-top: 0.5rem;">The neurological brake model — where stiffness is a protective response rather than tissue damage — is drawn from the work of Lorimer Moseley and David Butler on explain pain science and the neuromatrix theory of pain perception.</p>
+                        </div>
+                        <div style="border-left: 6px solid var(--crimson); padding-left: 2.5rem;">
+                            <span style="font-family: 'Plus Jakarta Sans'; font-size: 42px; font-weight: 800; color: var(--crimson); display: block;">ULTRADIAN RHYTHMS</span>
+                            <p class="body-text" style="color: var(--oat); margin-top: 0.5rem;">The 90-minute work interval is derived from ultradian rhythm research by Nathaniel Kleitman and later work by Ernest Rossi, which established the human body's natural 90–120 minute rest-activity cycles.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="border-left: 6px solid var(--crimson); padding-left: 2.5rem; margin-bottom: 4rem;">
+                            <span style="font-family: 'Plus Jakarta Sans'; font-size: 42px; font-weight: 800; color: var(--crimson); display: block;">DISC PRESSURE DYNAMICS</span>
+                            <p class="body-text" style="color: var(--oat); margin-top: 0.5rem;">The relationship between sitting posture and intradiscal pressure is well-documented by Alf Nachemson's landmark spinal pressure studies, which demonstrated that reclined sitting (100–110°) significantly reduces lumbar disc load.</p>
+                        </div>
+                        <div style="border-left: 6px solid var(--crimson); padding-left: 2.5rem;">
+                            <span style="font-family: 'Plus Jakarta Sans'; font-size: 42px; font-weight: 800; color: var(--crimson); display: block;">MOVEMENT VARIABILITY</span>
+                            <p class="body-text" style="color: var(--oat); margin-top: 0.5rem;">The principle that movement variety outperforms static posture is supported by occupational ergonomics research, notably the work of Alan Hedge and the Cornell University Ergonomics Group on dynamic sitting and micro-break intervention.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 5rem; padding: 2.5rem 3rem;">
+                    <p class="body-text" style="color: var(--stone); margin: 0; text-align: center; font-style: italic;">The Desk Reset synthesizes these established principles into a practical daily protocol. It does not claim to present new research — it translates existing evidence into actionable movement design for desk workers.</p>
+                </div>
+            </div>
+
+            <div class="folio" style="color: var(--crimson); border-color: var(--crimson);">
+                <span>The Desk Reset</span>
+                <span>The Evidence</span>
+                <span>03</span>
+            </div>
+        </div>
+
+        <!-- PAGE 4: THE REALITY -->
+        <div class="page" id="p3">
+            <div style="grid-column: 2 / 12; padding-top: 10rem;">
+                <span class="eyebrow" style="color: var(--crimson);">Chapter 01</span>
+                <h2 class="section-header" style="margin-top: 4rem; font-size: 180px; line-height: 0.85;">THE<br>REALITY.</h2>
+                
+                <div style="margin-top: 8rem; display: grid; grid-template-columns: 1fr 1fr; gap: 80px;">
+                    <div>
+                        <p class="body-text" style=" font-weight: 500;">If you spend your day writing code, designing interfaces, managing projects, or studying, you are likely intimately familiar with a specific kind of physical exhaustion.</p>
+                        <p class="body-text" style="margin-top: 2rem;">It is the deep ache in your lower back at 3:00 PM, the persistent tightness in your neck that makes you roll your head from side to side, and the stiffness in your hips that makes your first few steps after standing up feel incredibly heavy. Many people in their twenties and thirties say they feel twice their age. They assume this is simply the tax they must pay for working a modern, screen-based job.</p>
+                    </div>
+                    <div>
+                        <p class="body-text">This guide is built on a different premise: you do not need to quit your desk job to live without pain, nor do you need to spend hours at the gym undoing the effects of your workday. Your body adapts to the positions you hold most frequently. If you sit for eight to ten hours a day in a slumped position, your nervous system and muscles optimize for that shape.</p>
+                        <div style="width: 100px; height: 8px; background: var(--crimson); margin: 3rem 0;"></div>
+                        <p class="body-text" style="font-weight: 700; color: var(--obsidian);">To fix desk pain, you do not need radical change. You need targeted, consistent input that tells your nervous system to reset.</p>
+                    </div>
+                </div>
+
+                <!-- Health Disclaimer -->
+                <div style="margin-top: 6rem; padding: 2.5rem 3rem; background: rgba(0,0,0,0.04); border-radius: 4px;">
+                    <p class="body-text" style="margin: 0; font-size: 42px; color: var(--stone); font-style: italic;">Disclaimer: The information in this guide is for educational purposes only and does not constitute medical advice. Consult a qualified healthcare professional before beginning any movement or exercise program, especially if you have a pre-existing injury or chronic health condition.</p>
+                </div>
+            </div>
+
+            <div class="folio" style="color: var(--obsidian); border-color: var(--obsidian);">
+                <span>The Desk Reset</span>
+                <span>The Reality</span>
+                <span>04</span>
+            </div>
+        </div>
+
+        <!-- PAGE 5: THE MECHANISM -->
+        <div class="page dark" id="p4_new">
+            <div style="grid-column: 1 / 13; position: relative;">
+                 <span class="eyebrow" style="color: var(--crimson); margin-top: var(--margin-y);">Chapter 02</span>
+                 <h2 class="section-header" style="font-size: 160px; line-height: 0.9;">THE<br>MECHANISM.</h2>
+            </div>
+            
+            <div style="grid-column: 1 / 6; margin-top: 6rem;">
+                <p class="lead" style="color: var(--crimson);">To solve desk pain, you must first understand the mechanism behind it.</p>
+                <p class="body-text" style="color: var(--oat); margin-top: 2rem;">Your body is an efficient, adaptive system. It operates on a principle of economy: muscles that are not used become weak, and muscles that are held in a shortened state eventually lose their functional length.</p>
+                
+                <h3 style="font-family: 'Plus Jakarta Sans'; font-size: 60px; color: var(--oat); margin-top: 4rem; text-transform: uppercase;">The Predictable Pattern</h3>
+                <ul style="color: var(--stone); font-family: 'Inter'; font-size: 50px; line-height: 1.6; margin-top: 2rem; padding-left: 2rem;">
+                    <li style="margin-bottom: 1rem;">Your pelvis tilts backward or forward excessively, changing the curve of your lower spine.</li>
+                    <li style="margin-bottom: 1rem;">Your hip flexors remain in a compressed, shortened position.</li>
+                    <li style="margin-bottom: 1rem;">Your glutes, the largest muscle group in your lower body, are mechanically turned off because you are sitting on them.</li>
+                    <li style="margin-bottom: 1rem;">Your upper back rounds forward to bring your hands closer to your keyboard.</li>
+                    <li style="margin-bottom: 1rem;">Your head shifts forward, placing immense mechanical stress on the small muscles at the base of your skull.</li>
+                </ul>
+            </div>
+            
+            <div style="grid-column: 7 / 13; margin-top: 6rem;">
+                <div style="background: var(--crimson); padding: 5rem 5rem 6rem 5rem; border-radius: 4px;">
+                    <h3 style="font-family: 'Plus Jakarta Sans'; font-size: 55px; color: var(--obsidian); text-transform: uppercase;">Hours of Stillness</h3>
+                    <p class="body-text" style="color: var(--obsidian); margin-top: 2rem;">The primary reason sitting causes discomfort is not that sitting is inherently dangerous. The problem is <strong>sitting completely still for hours.</strong> When you move, your muscles pump blood and nutrients through your tissues. When you sit completely still for hours, blood flow slows down, metabolic waste products accumulate, and your tissues experience constant, unyielding pressure.</p>
+                    <p class="body-text" style="color: var(--obsidian); margin-top: 2rem;">Consider your lower back. When you sit with a rounded spine, the ligaments and discs in your lumbar region are placed under continuous tension.</p>
+                    <p class="body-text" style="color: var(--obsidian); margin-top: 2rem; font-weight: 700;">Over time, your brain perceives this constant strain as a threat and signals the surrounding muscles to tighten up to protect the area. The stiffness you feel is not structural damage: it is a neurological brake applied by your own brain.</p>
+                </div>
+            </div>
+
+            <div class="folio">
+                <span>The Desk Reset</span>
+                <span>The Mechanism</span>
+                <span>05</span>
+            </div>
+        </div>
+
+        <!-- PAGE 6: MECHANISM CONTINUED -->
+        <div class="page dark" id="p_mech2">
+            <div style="grid-column: 2 / 12; padding-top: 8rem;">
+                <span class="eyebrow" style="color: var(--crimson);">Chapter 02 / Continued</span>
+                <h2 class="section-header" style="font-size: 120px; line-height: 0.9; color: var(--oat);">APPLYING THE<br>MECHANISM.</h2>
+                <p class="body-text" style="color: var(--stone); margin-top: 3rem; max-width: 1100px;">Understanding why desk pain happens is only half the equation. The other half is knowing what not to do — and what to do instead.</p>
+
+                <div style="margin-top: 5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 60px;">
+                    <!-- Common Mistakes -->
+                    <div>
+                        <div style="background: rgba(230, 57, 70, 0.1); border-left: 8px solid var(--crimson); padding: 3rem 4rem;">
+                            <h3 style="font-family: 'Plus Jakarta Sans'; font-size: 55px; color: var(--crimson); margin-bottom: 2rem;">COMMON MISTAKES</h3>
+                            <ul style="color: var(--oat); font-family: 'Inter'; font-size: 50px; line-height: 1.6; padding-left: 2rem;">
+                                <li style="margin-bottom: 1.5rem;"><strong>Sitting bolt upright at 90°.</strong> This actually increases disc pressure. A slight recline (100–110°) with lumbar support is far better for your spine.</li>
+                                <li style="margin-bottom: 1.5rem;"><strong>Ignoring early warning signs.</strong> That subtle ache in your lower back is not a signal to push through — it is a signal to reset. Heed it.</li>
+                                <li><strong>Relying on a single posture.</strong> No posture, no matter how perfect, is healthy for eight hours straight. Movement variety is the goal.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Key Takeaways -->
+                    <div>
+                        <div style="background: var(--crimson); padding: 3rem 4rem; border-radius: 4px;">
+                            <h3 style="font-family: 'Plus Jakarta Sans'; font-size: 55px; color: var(--obsidian); margin-bottom: 2rem;">KEY TAKEAWAYS</h3>
+                            <ul style="color: var(--obsidian); font-family: 'Inter'; font-size: 50px; line-height: 1.6; padding-left: 2rem;">
+                                <li style="margin-bottom: 1.5rem; font-weight: 700;">Sitting is not dangerous — staying still for hours is.</li>
+                                <li style="margin-bottom: 1.5rem; font-weight: 700;">Desk pain is a neurological response, not tissue damage.</li>
+                                <li style="font-weight: 700;">Movement resets are the most effective intervention available.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fill space -->
+                <div style="margin-top: 5rem; border-top: 2px solid rgba(255,255,255,0.08); padding-top: 3rem;">
+                    <p class="body-text" style="color: var(--stone); font-style: italic; text-align: center; margin: 0;">The goal is not to sit perfectly — it is to sit consciously, and to interrupt stillness before your nervous system does it for you.</p>
+                </div>
+            </div>
+
+            <div class="folio" style="color: var(--crimson); border-color: var(--crimson);">
+                <span>The Desk Reset</span>
+                <span>Mechanism / Continued</span>
+                <span>06</span>
+            </div>
+        </div>
+
+        <!-- PAGE 7: BRUTALIST INFOGRAPHIC (THE FALLACY) -->
+        <div class="page dark" id="p4">
+            <div class="number-mark" style="top: 0; right: 0; opacity: 0.1;">05</div>
+            
+            <div style="grid-column: 1 / 13;">
+                <span class="eyebrow">Chapter 03</span>
+                <h2 class="section-header" style="color: var(--crimson); font-size: 260px;">WHY STRETCHING<br>FAILS.</h2>
+            </div>
+
+            <div style="grid-column: 1 / 6; margin-top: 8rem; position: relative;">
+                <p class="lead" style="color: white; margin-bottom: 2rem;">When people first notice their lower back is tight or their shoulders are rounded, their instinctual response is to stretch.</p>
+                <p class="body-text" style="color: var(--stone);">While static stretching can feel pleasant in the moment, it rarely provides long-term relief for desk workers. When you stretch a tight muscle and hold it for thirty seconds, the tension fades temporarily, but you have not changed the underlying reason why the brain made that muscle tight in the first place.</p>
+                <div style="width: 100px; height: 16px; background: var(--crimson); margin: 3rem 0;"></div>
+                <p class="body-text" style="color: var(--stone); font-weight: 700;">Within an hour, the tightness returns. Why? Because stretching only addresses the length of the muscle: it does not address control, stability, or strength.</p>
+            </div>
+
+            <div style="grid-column: 7 / 13; margin-top: 8rem; position: relative;">
+                <!-- Abstract visual representation -->
+                <div style="background: var(--crimson); padding: 5rem; border-radius: 4px;">
+                    <h3 style="font-family: 'Plus Jakarta Sans'; font-size: 80px; color: var(--obsidian); text-transform: uppercase; line-height: 1; margin-bottom: 4rem;">The Loop<br>of Pain</h3>
+                    
+                    <div style="display: flex; gap: 2rem; align-items: center; margin-bottom: 2rem;">
+                        <span style="font-family: 'Plus Jakarta Sans'; font-size: 64px; color: var(--oat); font-weight: 800;">1</span>
+                        <p style="font-family: 'Inter'; font-weight: 700; font-size: 50px; color: var(--obsidian); margin: 0;">Glutes Turn Off</p>
+                    </div>
+                    <div style="display: flex; gap: 2rem; align-items: center; margin-bottom: 2rem;">
+                        <span style="font-family: 'Plus Jakarta Sans'; font-size: 64px; color: var(--oat); font-weight: 800;">2</span>
+                        <p style="font-family: 'Inter'; font-weight: 700; font-size: 50px; color: var(--obsidian); margin: 0;">Brain Demands Stability</p>
+                    </div>
+                    <div style="display: flex; gap: 2rem; align-items: center; margin-bottom: 2rem;">
+                        <span style="font-family: 'Plus Jakarta Sans'; font-size: 64px; color: var(--oat); font-weight: 800;">3</span>
+                        <p style="font-family: 'Inter'; font-weight: 700; font-size: 50px; color: var(--obsidian); margin: 0;">Hamstrings Stiffen</p>
+                    </div>
+                    <div style="display: flex; gap: 2rem; align-items: center;">
+                        <span style="font-family: 'Plus Jakarta Sans'; font-size: 64px; color: var(--oat); font-weight: 800;">4</span>
+                        <p style="font-family: 'Inter'; font-weight: 700; font-size: 50px; color: var(--obsidian); margin: 0;">You Stretch Them</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="folio">
+                <span>The Desk Reset</span>
+                <span>The Fallacy</span>
+                <span>07</span>
+            </div>
+        </div>
+
+        <!-- PAGE 7: FALLACY CONTINUED -->
+        <div class="page dark" id="p_fallacy2">
+            <div style="grid-column: 2 / 12; padding-top: 8rem;">
+                <span class="eyebrow" style="color: var(--crimson);">Chapter 03 / Continued</span>
+                <h2 class="section-header" style="font-size: 140px; line-height: 0.9; color: var(--crimson);">BREAKING THE<br>LOOP.</h2>
+                <p class="body-text" style="color: var(--stone); margin-top: 3rem; max-width: 1100px;">Stretching fails because it treats the symptom, not the cause. Here is the framework for actually breaking the cycle — rooted in stability, not flexibility.</p>
+
+                <div style="margin-top: 3rem; display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                    <!-- Tent Pole -->
+                    <div>
+                        <div style="background: rgba(230, 57, 70, 0.15); border-left: 8px solid var(--crimson); padding: 2rem 3rem;">
+                            <h3 style="font-family: 'Plus Jakarta Sans'; font-size: 48px; color: var(--crimson); margin-bottom: 1.5rem;">THE TENT POLE ANALOGY</h3>
+                            <p class="body-text" style="color: var(--oat); font-size: 44px;">A tent stays standing, not because the fabric is strong, but because the poles create tension in opposite directions. A muscle feels tight when its opposing muscle is weak. Your tight hamstrings are compensating for your deactivated glutes. Stretching the hamstrings is pulling on the flap while the pole remains bent. The solution is not to stretch the tight side further, but to strengthen the side that has gone silent.</p>
+                        </div>
+                    </div>
+
+                    <!-- Key Takeaways -->
+                    <div>
+                        <div style="background: var(--crimson); padding: 2rem 3rem; border-radius: 4px;">
+                            <h3 style="font-family: 'Plus Jakarta Sans'; font-size: 48px; color: var(--obsidian); margin-bottom: 1.5rem;">KEY TAKEAWAYS</h3>
+                            <ul style="color: var(--obsidian); font-family: 'Inter'; font-size: 44px; line-height: 1.5; padding-left: 2rem;">
+                                <li style="margin-bottom: 1rem; font-weight: 700;">Static stretching provides transient relief without changing movement habits.</li>
+                                <li style="margin-bottom: 1rem; font-weight: 700;">Tightness often means weakness in the opposing muscle group.</li>
+                                <li style="font-weight: 700;">True resolution requires a combination of tissue release, joint mobility, and targeted muscular activation.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The Stability-Mobility Loop -->
+                <div style="margin-top: 2rem; padding: 2rem 3rem; background: var(--obsidian); border: 2px solid rgba(255,255,255,0.1); border-radius: 4px;">
+                    <span style="font-family: 'Plus Jakarta Sans'; font-size: 42px; font-weight: 800; color: var(--crimson); display: block; margin-bottom: 1.5rem;">THE STABILITY-MOBILITY LOOP</span>
+                    <p class="body-text" style="color: var(--stone); margin: 0;">Your body operates on a balance of mobility and stability. If a joint lacks stability, the nervous system stiffens the surrounding muscles to compensate. Many desk workers stretch their hamstrings daily yet the tightness never goes away — because their core and glutes are inactive. Stretching in this scenario removes the only form of stability the body has left, causing the brain to lock the area down even tighter.</p>
+                </div>
+            </div>
+
+            <div class="folio" style="color: var(--crimson); border-color: var(--crimson);">
+                <span>The Desk Reset</span>
+                <span>Fallacy / Continued</span>
+                <span>08</span>
+            </div>
+        </div>
+
+        <!-- PAGE 8: THE RESET FRAMEWORK -->
+        <div class="page" id="p_framework" style="background: var(--crimson); color: var(--obsidian);">
+            <div style="grid-column: 2 / 12; padding-top: 10rem;">
+                <span class="eyebrow" style="color: var(--oat);">Chapter 04</span>
+                <h2 class="section-header" style="font-size: 160px; line-height: 0.85;">THE RESET<br>FRAMEWORK.</h2>
+                
+                <p class="body-text" style=" font-weight: 500; margin-top: 4rem; max-width: 1000px;">To build a reliable system for desk pain, we must move away from random stretching and adopt a structured sequence. This system targets both your mechanical structures and your nervous system.</p>
+                
+                <div style="margin-top: 8rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px;">
+                    <div style="border-top: 8px solid var(--obsidian); padding-top: 2rem;">
+                         <span style="font-family: 'Plus Jakarta Sans'; font-size: 60px; font-weight: 800; display: block;">01</span>
+                         <h3 style="font-family: 'Plus Jakarta Sans'; font-size: 60px; margin: 1rem 0;">Reset</h3>
+                         <p class="body-text" style="font-size: 50px; font-weight: 700; margin-bottom: 1rem;">Interrupt static tension.</p>
+                         <p class="body-text" style="font-size: 50px;">Decompression positions and breathing techniques signal the nervous system to let go of defensive tension.</p>
+                    </div>
+                    <div style="border-top: 8px solid var(--obsidian); padding-top: 2rem;">
+                         <span style="font-family: 'Plus Jakarta Sans'; font-size: 60px; font-weight: 800; display: block;">02</span>
+                         <h3 style="font-family: 'Plus Jakarta Sans'; font-size: 60px; margin: 1rem 0;">Mobilize</h3>
+                         <p class="body-text" style="font-size: 50px; font-weight: 700; margin-bottom: 1rem;">Restore joint movement.</p>
+                         <p class="body-text" style="font-size: 50px;">Gentle, active joint mobilization targeting the specific areas that become restricted during desk work.</p>
+                    </div>
+                    <div style="border-top: 8px solid var(--obsidian); padding-top: 2rem;">
+                         <span style="font-family: 'Plus Jakarta Sans'; font-size: 60px; font-weight: 800; display: block;">03</span>
+                         <h3 style="font-family: 'Plus Jakarta Sans'; font-size: 60px; margin: 1rem 0;">Strengthen</h3>
+                         <p class="body-text" style="font-size: 50px; font-weight: 700; margin-bottom: 1rem;">Lock in new mobility.</p>
+                         <p class="body-text" style="font-size: 50px;">Build strength in the new space. Focus on underused muscle groups: deep neck flexors, lower traps, and glutes.</p>
+                    </div>
+                    <div style="border-top: 8px solid var(--obsidian); padding-top: 2rem;">
+                         <span style="font-family: 'Plus Jakarta Sans'; font-size: 60px; font-weight: 800; display: block;">04</span>
+                         <h3 style="font-family: 'Plus Jakarta Sans'; font-size: 60px; margin: 1rem 0;">Sustain</h3>
+                         <p class="body-text" style="font-size: 50px; font-weight: 700; margin-bottom: 1rem;">Prevent regression.</p>
+                         <p class="body-text" style="font-size: 50px;">Optimize your physical environment and alter how you move during non-working hours to maintain gains.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="folio" style="color: var(--obsidian); border-color: var(--obsidian);">
+                <span>The Desk Reset</span>
+                <span>The Framework</span>
+                <span>09</span>
+            </div>
+        </div>
+
+        <!-- PAGE 6: MORNING RESET -->
+        <div class="page" id="p_morning">
+            <div style="grid-column: 1 / 13; position: relative;">
+                 <span class="eyebrow" style="color: var(--crimson);">The Routines</span>
+                 <h2 class="section-header" style="font-size: 160px; line-height: 0.9;">MORNING<br>RESET. <span style="font-size: 80px; color: var(--stone); display: inline-block; transform: translateY(-40px);">(5 MIN)</span></h2>
+                 
+                 <p class="body-text" style="font-weight: 700; margin-top: 2rem; max-width: 1000px;">When you wake up, your tissues are naturally dehydrated and stiff from hours of immobility. The goal of this quick sequence is to act as a physical primer before you sit down for hours.</p>
+                 
+                 <div style="margin-top: 6rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px;">
+                     <!-- Move 1 -->
+                     <div style="border-top: 4px solid var(--obsidian); padding-top: 2rem;">
+                         <span class="eyebrow" style="color: var(--crimson); font-size: 44px;">M1 / DECOMPRESS. BREATHING</span>
+                         <div style="width: 100%; height: 360px; background: var(--oat) url('M1-decompression-breathing.jpg') center/contain no-repeat; border-radius: 4px;" role="img" aria-label="Decompression breathing"></div>
+                         <p class="body-text" style="margin-top: 1rem;"><strong>Position:</strong> Lie flat on your back, knees bent, feet flat. One hand on chest, one on belly.</p>
+                         <p class="body-text" style="margin-top: 1rem;"><strong>Movement:</strong> Inhale deeply for 4s (belly rises). Hold 2s. Exhale 6s.</p>
+                     </div>
+                     <!-- Move 2 -->
+                     <div style="border-top: 4px solid var(--obsidian); padding-top: 2rem;">
+                         <span class="eyebrow" style="color: var(--crimson); font-size: 44px;">M2 / THE CAT-COW FLOW</span>
+                         <div style="width: 100%; height: 360px; background: var(--oat) url('M2-cat-cow-flow.jpg') center/contain no-repeat; border-radius: 4px;" role="img" aria-label="Cat-Cow Flow"></div>
+                         <p class="body-text" style="margin-top: 1rem;"><strong>Position:</strong> Hands and knees on the floor.</p>
+                         <p class="body-text" style="margin-top: 1rem;"><strong>Movement:</strong> Inhale and drop belly toward floor. Exhale, push floor away and round spine up. Move smoothly.</p>
+                     </div>
+                     <!-- Move 3 -->
+                     <div style="border-top: 4px solid var(--obsidian); padding-top: 2rem;">
+                         <span class="eyebrow" style="color: var(--crimson); font-size: 44px;">M3 / GLUTE BRIDGE</span>
+                         <div style="width: 100%; height: 360px; background: var(--oat) url('M3-glute-bridge.jpg') center/contain no-repeat; border-radius: 4px;" role="img" aria-label="Glute Bridge"></div>
+                         <p class="body-text" style="margin-top: 1rem;"><strong>Position:</strong> Lie on back, knees bent at 90°, feet flat.</p>
+                         <p class="body-text" style="margin-top: 1rem;"><strong>Movement:</strong> Drive through heels to lift hips to the ceiling. Squeeze glutes. Do 2 sets of 10 reps.</p>
+                     </div>
+                 </div>
+            </div>
+
+            <div class="folio">
+                <span>The Desk Reset</span>
+                <span>Morning Reset</span>
+                <span>10</span>
+            </div>
+        </div>
+
+        <!-- PAGE 7: MIDDAY RESET -->
+        <div class="page dark" id="p_midday">
+            <div style="grid-column: 1 / 13; position: relative;">
+                 <span class="eyebrow" style="color: var(--crimson);">The Routines</span>
+                 <h2 class="section-header" style="font-size: 160px; line-height: 0.9;">MIDDAY<br>RESET. <span style="font-size: 80px; color: var(--stone); display: inline-block; transform: translateY(-40px);">(3 MIN)</span></h2>
+                 
+                 <p class="body-text" style="font-weight: 700; color: var(--oat); margin-top: 2rem; max-width: 1000px;">The Midday Reset is your defense against cumulative working tension. Reverse the typing posture directly at your workstation. Break the cycle.</p>
+                 
+                 <div style="margin-top: 6rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px;">
+                     <!-- Move 1 -->
+                     <div style="border-top: 4px solid var(--crimson); padding-top: 2rem;">
+                         <span class="eyebrow" style="color: var(--crimson); font-size: 44px;">D1 / SEATED BOX-CAR OPENER</span>
+                         <div style="width: 100%; height: 340px; background: var(--obsidian) url('D1-seated-box-car-opener.png') center/contain no-repeat; border-radius: 4px;" role="img" aria-label="Seated Box-Car Opener"></div>
+                         <p class="body-text" style="color: var(--oat); margin-top: 1rem;"><strong>Position:</strong> Sit on edge of chair. Fingers interlocked behind head, elbows wide.</p>
+                         <p class="body-text" style="color: var(--oat); margin-top: 1rem;"><strong>Movement:</strong> Lean backward over your chair's backrest, let chest point to ceiling. Repeat 10x.</p>
+                     </div>
+                     <!-- Move 2 -->
+                     <div style="border-top: 4px solid var(--crimson); padding-top: 2rem;">
+                         <span class="eyebrow" style="color: var(--crimson); font-size: 44px;">D2 / BRUEGGER RELIEF</span>
+                         <div style="width: 100%; height: 340px; background: var(--obsidian) url('D2-bruegger-relief.jpg') center/contain no-repeat; border-radius: 4px;" role="img" aria-label="Bruegger Relief"></div>
+                         <p class="body-text" style="color: var(--oat); margin-top: 1rem;"><strong>Position:</strong> Sit upright. Arms by sides, palms rotated out, fingers spread.</p>
+                         <p class="body-text" style="color: var(--oat); margin-top: 1rem;"><strong>Movement:</strong> Tuck chin, pull shoulder blades down and back. Take 3 deep breaths. Repeat 3x.</p>
+                     </div>
+                     <!-- Move 3 -->
+                     <div style="border-top: 4px solid var(--crimson); padding-top: 2rem;">
+                         <span class="eyebrow" style="color: var(--crimson); font-size: 44px;">D3 / DESK WRIST RELEASE</span>
+                         <div style="width: 100%; height: 340px; background: var(--obsidian) url('D3-desk-wrist-release.png') center/contain no-repeat; border-radius: 4px;" role="img" aria-label="Desk Wrist Release"></div>
+                         <p class="body-text" style="color: var(--oat); margin-top: 1rem;"><strong>Position:</strong> Stand facing desk. Palms flat on desk, fingers pointing backward.</p>
+                         <p class="body-text" style="color: var(--oat); margin-top: 1rem;"><strong>Movement:</strong> Lean weight backward until you feel stretch in forearms. Hold 30s.</p>
+                     </div>
+                 </div>
+
+                 <!-- Quick Tip Callout -->
+                 <div style="background: rgba(230, 57, 70, 0.1); border-left: 8px solid var(--crimson); padding: 3rem 4rem; margin-top: 4rem;">
+                     <span style="font-family: 'Plus Jakarta Sans'; font-size: 42px; font-weight: 800; color: var(--crimson);">QUICK TIP</span>
+                     <p class="body-text" style="color: var(--oat); margin: 0.5rem 0 0 0;">Set a 1:00 PM recurring alarm. When it rings, stop typing. Reset. Your future neck will thank you.</p>
+                 </div>
+            </div>
+
+            <div class="folio">
+                <span>The Desk Reset</span>
+                <span>Midday Reset</span>
+                <span>11</span>
+            </div>
+        </div>
+
+        <!-- PAGE 8: EVENING RESET -->
+        <div class="page" id="p_evening" style="background: var(--obsidian); color: var(--oat);">
+            <div style="grid-column: 1 / 13; position: relative;">
+                <span class="eyebrow" style="color: var(--crimson);">The Routines</span>
+                <h2 class="section-header" style="font-size: 160px; line-height: 0.9;">EVENING<br>RESET. <span style="font-size: 80px; color: var(--stone); display: inline-block; transform: translateY(-40px);">(2 MIN)</span></h2>
+                
+                <p class="body-text" style="font-weight: 700; color: var(--oat); margin-top: 2rem; max-width: 1000px;">The Evening Reset is designed to signal to your body that the workday is officially over. The primary objective here is tissue decompression and transitioning your nervous system out of work mode.</p>
+                 
+                <div style="margin-top: 6rem; display: grid; grid-template-columns: 1fr 1fr; gap: 80px;">
+                    <div style="border-top: 4px solid var(--crimson); padding-top: 2rem;">
+                         <span class="eyebrow" style="color: var(--crimson); font-size: 44px;">E1 / THE COUCH STRETCH</span>
+                         <div style="width: 100%; height: 360px; background: var(--obsidian) url('E1-couch-stretch.jpg') center/contain no-repeat; border-radius: 4px;" role="img" aria-label="Couch Stretch"></div>
+                         <p class="body-text" style="font-size: 50px; margin-top: 2rem; color: var(--oat);">Kneel in front of a couch, keeping your torso extremely upright. Squeeze your glute firmly to tilt your pelvis. Feel the profound stretch along the front of your hip. Hold for 30s.</p>
+                    </div>
+                    <div style="border-top: 4px solid var(--crimson); padding-top: 2rem;">
+                         <span class="eyebrow" style="color: var(--crimson); font-size: 44px;">E2 / RESTORATIVE EXTENSION</span>
+                         <div style="width: 100%; height: 360px; background: var(--obsidian) url('E2-restorative-extension.jpg') center/contain no-repeat; border-radius: 4px;" role="img" aria-label="Restorative Extension"></div>
+                         <p class="body-text" style="font-size: 50px; margin-top: 2rem; color: var(--oat);">Roll a towel into a firm cylinder. Lie flat with the towel directly under your shoulder blades. Arms out like a T. Breathe naturally for 1 minute.</p>
+                    </div>
+                </div>
+            </div>
+ 
+            <div class="folio" style="color: var(--crimson); border-color: var(--crimson);">
+                <span>The Desk Reset</span>
+                <span>The Evening Reset</span>
+                <span>12</span>
+            </div>
+        </div>
+ 
+         <!-- PAGE 6: THE ENVIRONMENT -->
+        <div class="page dark" id="p6">
+            <div style="grid-column: 1 / 13; position: relative;">
+                 <span class="eyebrow" style="color: var(--crimson); margin-top: var(--margin-y);">Chapter 05</span>
+                 <h2 class="section-header" style="font-size: 180px; line-height: 0.9;">THE DESK<br>SETUP.</h2>
+                 <p class="body-text" style="color: var(--stone); margin-top: 4rem; max-width: 1200px;">No amount of daily exercise can overcome an environment that actively works against your anatomy. You do not need to purchase an expensive ergonomic chair; instead, you must configure your existing furniture to fit your physical dimensions. The human body functions best when joints are kept in neutral mid-ranges.</p>
+                 
+                 <div style="margin-top: 6rem; display: grid; grid-template-columns: 1fr 1fr; gap: 80px;">
+                     <div>
+                         <span style="font-family: 'Plus Jakarta Sans'; font-size: 60px; font-weight: 800; color: var(--crimson);">01 / THE CHAIR</span>
+                         <p class="body-text" style="color: var(--oat); margin-top: 2rem;">Adjust height so elbows bend at 90 degrees. Hips should be slightly higher than knees.</p>
+                     </div>
+                     <div>
+                         <span style="font-family: 'Plus Jakarta Sans'; font-size: 60px; font-weight: 800; color: var(--crimson);">02 / THE MONITOR</span>
+                         <p class="body-text" style="color: var(--oat); margin-top: 2rem;">Top third of the screen at eye level. Looking down hurts your neck.</p>
+                     </div>
+                     <div style="grid-column: span 2; margin-top: 4rem;">
+                         <div style="width: 100%; height: 850px; background: url('desk-ergonomic-blueprint.png') center/contain no-repeat; border-radius: 4px;" role="img" aria-label="Ergonomic blueprint"></div>
+                     </div>
+                 </div>
+            </div>
+            <div class="folio">
+                <span>The Desk Reset</span>
+                <span>The Desk Setup</span>
+                <span>13</span>
+            </div>
+        </div>
+
+        <!-- PAGE 7: STANDING DESK FALLACY -->
+        <div class="page red" id="p7">
+            <div style="grid-column: 2 / 12; align-self: center; text-align: center;">
+                 <h2 class="section-header" style="font-size: 140px; color: var(--obsidian);">STANDING IS<br>NOT MOVING.</h2>
+                 <p class="body-text" style="margin-top: 6rem; font-weight: 500;">A standing desk simply replaces lumbar compression with venous pooling in the legs. <br><br>The goal is not a better static position. <br>The goal is dynamic tissue loading.</p>
+                 <div style="width: 100%; height: 8px; background: var(--obsidian); margin-top: 8rem;"></div>
+            </div>
+        </div>
+
+        <!-- PAGE 8: THE 90-MINUTE RULE -->
+        <div class="page" id="p8">
+            <div style="grid-column: 1 / 13; z-index: 2; height: 100%;">
+                <div style="background: var(--crimson); color: var(--oat); padding: 8rem 6rem; width: 100%; border-radius: 4px;">
+                    <h2 class="section-header" style="font-size: 180px; line-height: 0.9; color: var(--oat);">THE 90 MINUTE<br>RULE.</h2>
+                    <p class="lead" style="color: var(--obsidian); margin-top: 4rem; max-width: 1200px;">For every ninety minutes of continuous desk work, walk for exactly two minutes.</p>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-top: 6rem; padding-bottom: 2rem;">
+                    <div>
+                        <p class="body-text">We often view walking as an aerobic exercise, but for desk workers, its primary value is structural. Walking is a dynamic reset for the entire body, restoring normal tissue length and joint mechanics. When you walk, your hips extend completely behind your body, lengthening the hip flexors that are compressed while sitting.</p>
+                        <p class="body-text" style="margin-top: 2rem;">You do not need to walk for an hour straight to experience these benefits. In fact, for a desk worker, shorter, frequent walks are significantly more effective than one long walk at the end of the day.</p>
+                    </div>
+                     <div style="width: 100%; height: 500px; background: var(--stone) url('walking-gait-diagram.png') center/contain no-repeat; border-radius: 4px;" role="img" aria-label="Walking gait diagram"></div>
+                </div>
+
+                <!-- Walking Action Items -->
+                <div style="margin-top: 4rem; padding: 4rem; background: var(--obsidian); color: var(--oat); border-radius: 4px;">
+                    <span style="font-family: 'Plus Jakarta Sans'; font-size: 50px; font-weight: 800; color: var(--crimson); display: block; margin-bottom: 2rem;">WALKING ACTION ITEMS</span>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                        <div>
+                            <p class="body-text" style="color: var(--oat);"><strong style="color: var(--crimson);">01.</strong> Wear a step tracker or use your phone's health app. 5,000 steps outside of your walking commute is a meaningful target.</p>
+                        </div>
+                        <div>
+                            <p class="body-text" style="color: var(--oat);"><strong style="color: var(--crimson);">02.</strong> Walk with your gaze at the horizon, not at your phone. Chin up, arms swinging. This reinforces the posture your desk destroyed.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="folio">
+                <span>The Desk Reset</span>
+                <span>The 90 Min Rule</span>
+                <span>14</span>
+            </div>
+        </div>
+
+        <!-- PAGE 9: SLEEP ALIGNMENT -->
+        <div class="page" id="p9">
+             <div style="grid-column: 1 / 13;">
+                 <span class="eyebrow" style="color: var(--crimson);">Sleep Posture</span>
+                 <h2 class="section-header" style="font-size: 160px;">SLEEP<br>ALIGNMENT.</h2>
+                 <p class="body-text" style="margin-top: 4rem; max-width: 1400px; font-weight: 500;">You spend roughly one-third of your life in bed. If your sleeping posture places your spine under mechanical stress, you will start your day with structural tension before you even arrive at your desk. The goal of sleep ergonomics is to keep your spine in a neutral alignment from your skull down to your sacrum.</p>
+             </div>
+             
+             <div style="grid-column: 1 / 13; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 6rem;">
+                 <div style="border-top: 12px solid var(--obsidian); padding-top: 2rem;">
+                     <h3 style="font-family: 'Plus Jakarta Sans'; font-size: 60px;">SIDE</h3>
+                     <div style="width: 100%; height: 340px; background: var(--oat) url('S1-sleep-side-position.jpg') center/contain no-repeat; border-radius: 4px;" role="img" aria-label="Side sleeping position"></div>
+                     <p class="body-text" style="margin-top: 2rem;">Medium height pillow + small pillow between knees.</p>
+                 </div>
+                 <div style="border-top: 12px solid var(--obsidian); padding-top: 2rem;">
+                     <h3 style="font-family: 'Plus Jakarta Sans'; font-size: 60px;">BACK</h3>
+                     <div style="width: 100%; height: 340px; background: var(--oat) url('S2-sleep-back-position.jpg') center/contain no-repeat; border-radius: 4px;" role="img" aria-label="Back sleeping position"></div>
+                     <p class="body-text" style="margin-top: 2rem;">Low-profile pillow + medium pillow under knees.</p>
+                 </div>
+                 <div style="border-top: 12px solid var(--crimson); padding-top: 2rem;">
+                     <h3 style="font-family: 'Plus Jakarta Sans'; font-size: 60px; color: var(--crimson);">STOMACH</h3>
+                     <div style="width: 100%; height: 340px; background: var(--oat) url('S3-sleep-stomach-position.jpg') center/contain no-repeat; border-radius: 4px;" role="img" aria-label="Stomach sleeping position"></div>
+                     <p class="body-text" style="margin-top: 2rem;">Avoid this position. If necessary, use a thin pillow under your stomach.</p>
+                 </div>
+             </div>
+
+             <div class="folio">
+                <span>The Desk Reset</span>
+                <span>Sleep Alignment</span>
+                <span>15</span>
+            </div>
+        </div>
+
+        <!-- PAGE 10: PROGRESS TRACKER -->
+        <div class="page dark" id="p10">
+            <div style="grid-column: 1 / 13; display: flex; flex-direction: column; height: 100%;">
+                <div>
+                    <span class="eyebrow" style="color: var(--crimson);">Chapter 06</span>
+                    <h2 class="section-header" style="font-size: 140px; color: var(--oat); line-height: 0.9;">WEEKLY PROGRESS<br>TRACKER.</h2>
+                    <p class="body-text" style="font-weight: 500; margin-top: 2rem; max-width: 1100px;">Consistency, not perfection. Mark off each day you complete the sequence. Four weeks to build the habit.</p>
+                </div>
+
+                <!-- Tracker Grid: week-label + 7 days -->
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 10px; margin-top: 1.5rem;">
+                    <!-- Day headers -->
+                    <div style="display: grid; grid-template-columns: 90px repeat(7, 1fr); gap: 10px;">
+                        <div></div>
+                        <div style="text-align: center; color: var(--crimson); font-family: 'Plus Jakarta Sans'; font-size: 40px; font-weight: 800;">MON</div>
+                        <div style="text-align: center; color: var(--crimson); font-family: 'Plus Jakarta Sans'; font-size: 40px; font-weight: 800;">TUE</div>
+                        <div style="text-align: center; color: var(--crimson); font-family: 'Plus Jakarta Sans'; font-size: 40px; font-weight: 800;">WED</div>
+                        <div style="text-align: center; color: var(--crimson); font-family: 'Plus Jakarta Sans'; font-size: 40px; font-weight: 800;">THU</div>
+                        <div style="text-align: center; color: var(--crimson); font-family: 'Plus Jakarta Sans'; font-size: 40px; font-weight: 800;">FRI</div>
+                        <div style="text-align: center; color: var(--crimson); font-family: 'Plus Jakarta Sans'; font-size: 40px; font-weight: 800;">SAT</div>
+                        <div style="text-align: center; color: var(--crimson); font-family: 'Plus Jakarta Sans'; font-size: 40px; font-weight: 800;">SUN</div>
+                    </div>
+
+                    <!-- Week 1 -->
+                    <div style="display: grid; grid-template-columns: 90px repeat(7, 1fr); gap: 10px; align-items: center;">
+                        <div style="font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 40px; color: var(--crimson); letter-spacing: 0.15em; text-align: center;">WK 1</div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                    </div>
+
+                    <!-- Week 2 -->
+                    <div style="display: grid; grid-template-columns: 90px repeat(7, 1fr); gap: 10px; align-items: center;">
+                        <div style="font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 40px; color: var(--crimson); letter-spacing: 0.15em; text-align: center;">WK 2</div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                    </div>
+
+                    <!-- Week 3 -->
+                    <div style="display: grid; grid-template-columns: 90px repeat(7, 1fr); gap: 10px; align-items: center;">
+                        <div style="font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 40px; color: var(--crimson); letter-spacing: 0.15em; text-align: center;">WK 3</div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                    </div>
+
+                    <!-- Week 4 -->
+                    <div style="display: grid; grid-template-columns: 90px repeat(7, 1fr); gap: 10px; align-items: center;">
+                        <div style="font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 40px; color: var(--crimson); letter-spacing: 0.15em; text-align: center;">WK 4</div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                        <div style="aspect-ratio: 1/1; border: 3px solid var(--stone); border-radius: 6px;"></div>
+                    </div>
+                </div>
+
+                <!-- Weekly Evaluation & Reflection -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 3rem; padding-top: 3rem; border-top: 2px solid var(--stone);">
+                    <div style="padding: 3rem; background: rgba(230, 57, 70, 0.08); border-radius: 4px;">
+                        <span style="font-family: 'Plus Jakarta Sans'; font-size: 42px; font-weight: 800; color: var(--crimson);">WEEKLY EVALUATION</span>
+                        <p class="body-text" style="color: var(--stone); margin-top: 1rem;">Rate your awareness of desk-bound body tension on a scale of 1 to 5 — <strong style="color: var(--oat);">1</strong> (completely disconnected) to <strong style="color: var(--oat);">5</strong> (highly aware and responsive). Consistent 4s and 5s over two weeks means the habit is forming.</p>
+                    </div>
+                    <div style="padding: 3rem; background: rgba(230, 57, 46, 0.08); border-radius: 4px;">
+                        <span style="font-family: 'Plus Jakarta Sans'; font-size: 42px; font-weight: 800; color: var(--crimson);">REFLECTION CHECKLIST</span>
+                        <p class="body-text" style="color: var(--stone); margin: 1rem 0 0.5rem 0;"><span style="color: var(--oat);">□</span> Did I complete all three daily resets?</p>
+                        <p class="body-text" style="color: var(--stone); margin: 0 0 0.5rem 0;"><span style="color: var(--oat);">□</span> Did I stand up every 90 minutes today?</p>
+                        <p class="body-text" style="color: var(--stone); margin: 0;"><span style="color: var(--oat);">□</span> What did my body feel like before and after each reset?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="folio">
+                <span>The Desk Reset</span>
+                <span>The Tracker</span>
+                <span>16</span>
+            </div>
+        </div>
+
+        <!-- PAGE 11: FAQ -->
+        <div class="page" id="p11">
+             <div style="grid-column: 1 / 13; margin-bottom: 6rem;">
+                 <h2 class="section-header" style="font-size: 160px; color: var(--obsidian);">COMMON<br>QUESTIONS.</h2>
+             </div>
+             
+             <div style="grid-column: 1 / 13; display: flex; flex-direction: column; gap: 6rem; height: 100%;">
+                 <div style="background: var(--obsidian); color: var(--oat); padding: 5rem; border-left: 20px solid var(--crimson);">
+                     <span style="font-family: 'Plus Jakarta Sans'; font-size: 50px; font-weight: 800; color: var(--crimson); display: block; margin-bottom: 2rem;">Q: SHOULD I SIT AT 90 DEGREES?</span>
+                     <p class="body-text" style="margin: 0;">No. A slightly reclined sitting position (100° to 110°) reduces intradiscal pressure, provided your chair supports your lower back properly.</p>
+                 </div>
+                 
+                 <div style="background: var(--oat); color: var(--obsidian); padding: 5rem; border-left: 20px solid var(--crimson); border: 4px solid var(--obsidian); border-left-width: 20px;">
+                     <span style="font-family: 'Plus Jakarta Sans'; font-size: 50px; font-weight: 800; color: var(--obsidian); display: block; margin-bottom: 2rem;">Q: WHAT IF I MISS THE MORNING ROUTINE?</span>
+                     <p class="body-text" style="margin: 0;">Double the duration of the Midday reset. The most critical error is believing that one missed routine ruins the architecture of the week.</p>
+                 </div>
+
+                 <div style="background: var(--crimson); color: var(--oat); padding: 5rem; border-left: 20px solid var(--obsidian);">
+                     <span style="font-family: 'Plus Jakarta Sans'; font-size: 50px; font-weight: 800; color: var(--obsidian); display: block; margin-bottom: 2rem;">Q: WILL STANDING SOLVE THE PROBLEM?</span>
+                     <p class="body-text" style="margin: 0;">Standing is just another static position. The goal is dynamic loading. Sit for 90, walk for 2.</p>
+                 </div>
+
+                 <div style="background: var(--obsidian); color: var(--oat); padding: 5rem; border-left: 20px solid var(--crimson);">
+                     <span style="font-family: 'Plus Jakarta Sans'; font-size: 50px; font-weight: 800; color: var(--crimson); display: block; margin-bottom: 2rem;">Q: HOW QUICKLY WILL I NOTICE RESULTS?</span>
+                     <p class="body-text" style="margin: 0;">Many users notice immediate relief after completing the Midday Reset. Structural changes typically take 14–21 days of consistent practice to feel a meaningful reduction in daily baseline stiffness.</p>
+                 </div>
+
+                 <!-- Fill remaining space with structural element -->
+                 <div style="margin-top: auto; height: 200px; width: 100%; display: flex; gap: 40px; align-items: flex-end; padding-bottom: 12rem;">
+                     <div style="flex: 1; border-bottom: 12px solid var(--obsidian);"></div>
+                     <div style="flex: 1; border-bottom: 12px solid var(--crimson);"></div>
+                     <div style="flex: 1; border-bottom: 12px solid var(--obsidian);"></div>
+                 </div>
+             </div>
+
+             <div class="folio">
+                <span>The Desk Reset</span>
+                <span>FAQs</span>
+                <span>17</span>
+            </div>
+        </div>
+
+        <!-- PAGE 12: 30 DAY PLAN -->
+        <div class="page red" id="p12">
+            <div style="grid-column: 1 / 13; display: flex; flex-direction: column; height: 100%; position: relative;">
+                <!-- Title -->
+                <div>
+                    <h2 class="section-header" style="font-size: 160px; color: var(--obsidian); line-height: 0.85;">THE 30-DAY<br>PLAN.</h2>
+                    <p class="body-text" style="color: var(--obsidian); font-weight: 500; margin-top: 1.5rem; max-width: 1000px;">Four weeks of progressive habit stacking. Each week builds on the last.</p>
+                </div>
+
+                <!-- Stepped Timeline -->
+                <div style="flex: 1; display: flex; align-items: center; position: relative;">
+                    <!-- Connection track -->
+                    <div style="position: absolute; top: 38%; left: 5%; right: 5%; height: 6px; background: var(--obsidian); opacity: 0.2; border-radius: 3px;"></div>
+
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; width: 100%; position: relative; z-index: 1;">
+                        <!-- Week 1 -->
+                        <div style="text-align: center;">
+                            <div style="width: 100px; height: 100px; border-radius: 50%; background: var(--obsidian); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; position: relative; box-shadow: 0 8px 0 rgba(0,0,0,0.15);">
+                                <span style="font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 44px; color: var(--crimson);">01</span>
+                            </div>
+                            <div style="background: var(--oat); border-radius: 8px; padding: 1.5rem; text-align: left; min-height: 200px; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                                <span style="font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 44px; color: var(--obsidian); letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px;">
+                                    WEEK 1
+                                    <span style="font-size: 42px; color: var(--crimson); font-weight: 400;">— Foundation</span>
+                                </span>
+                                <div style="width: 30px; height: 3px; background: var(--crimson); margin: 0.8rem 0;"></div>
+                                <p class="body-text" style="font-size: 50px; color: var(--obsidian); margin: 0; flex: 1;"><strong>Reset:</strong> Adjust workspace ergonomics. Implement Morning Reset (5 min).</p>
+                            </div>
+                        </div>
+
+                        <!-- Week 2 (offset) -->
+                        <div style="text-align: center; margin-top: 3rem;">
+                            <div style="width: 100px; height: 100px; border-radius: 50%; background: var(--obsidian); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; position: relative; box-shadow: 0 8px 0 rgba(0,0,0,0.15);">
+                                <span style="font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 44px; color: var(--crimson);">02</span>
+                            </div>
+                            <div style="background: var(--oat); border-radius: 8px; padding: 1.5rem; text-align: left; min-height: 200px; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                                <span style="font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 44px; color: var(--obsidian); letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px;">
+                                    WEEK 2
+                                    <span style="font-size: 42px; color: var(--crimson); font-weight: 400;">— Build</span>
+                                </span>
+                                <div style="width: 30px; height: 3px; background: var(--crimson); margin: 0.8rem 0;"></div>
+                                <p class="body-text" style="font-size: 50px; color: var(--obsidian); margin: 0; flex: 1;"><strong>Add:</strong> Midday Reset at 1:00 PM daily. Optimize sleep posture with proper pillow placement.</p>
+                            </div>
+                        </div>
+
+                        <!-- Week 3 -->
+                        <div style="text-align: center;">
+                            <div style="width: 100px; height: 100px; border-radius: 50%; background: var(--obsidian); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; position: relative; box-shadow: 0 8px 0 rgba(0,0,0,0.15);">
+                                <span style="font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 44px; color: var(--crimson);">03</span>
+                            </div>
+                            <div style="background: var(--oat); border-radius: 8px; padding: 1.5rem; text-align: left; min-height: 200px; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                                <span style="font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 44px; color: var(--obsidian); letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px;">
+                                    WEEK 3
+                                    <span style="font-size: 42px; color: var(--crimson); font-weight: 400;">— Integrate</span>
+                                </span>
+                                <div style="width: 30px; height: 3px; background: var(--crimson); margin: 0.8rem 0;"></div>
+                                <p class="body-text" style="font-size: 50px; color: var(--obsidian); margin: 0; flex: 1;"><strong>Add:</strong> Evening Reset (2 min). Introduce 10-min post-meal walk. Three sessions per day active.</p>
+                            </div>
+                        </div>
+
+                        <!-- Week 4 (offset) -->
+                        <div style="text-align: center; margin-top: 3rem;">
+                            <div style="width: 100px; height: 100px; border-radius: 50%; background: var(--obsidian); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; position: relative; box-shadow: 0 8px 0 rgba(0,0,0,0.15);">
+                                <span style="font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 44px; color: var(--crimson);">04</span>
+                            </div>
+                            <div style="background: var(--oat); border-radius: 8px; padding: 1.5rem; text-align: left; min-height: 200px; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                                <span style="font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 44px; color: var(--obsidian); letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px;">
+                                    WEEK 4
+                                    <span style="font-size: 42px; color: var(--crimson); font-weight: 400;">— Automate</span>
+                                </span>
+                                <div style="width: 30px; height: 3px; background: var(--crimson); margin: 0.8rem 0;"></div>
+                                <p class="body-text" style="font-size: 50px; color: var(--obsidian); margin: 0; flex: 1;"><strong>Own it:</strong> All three routines combined into a seamless daily habit — ~10 min total.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="folio" style="border-color: var(--obsidian); color: var(--obsidian);">
+                <span>The Desk Reset</span>
+                <span>30 Day Plan</span>
+                <span>18</span>
+            </div>
+        </div>
+
+        <!-- PAGE 13: CONSISTENCY METRIC -->
+        <div class="page dark" id="p13" style="display: flex; align-items: center; justify-content: center; padding: 0;">
+            <div style="text-align: center;">
+                 <h2 class="section-header" style="font-size: 240px; color: var(--crimson); line-height: 0.85;">CONSISTENCY<br>IS THE ONLY<br>GOAL.</h2>
+            </div>
+        </div>
+
+        <!-- PAGE 14: CONCLUSION -->
+        <div class="page" id="p14" style="display: flex; flex-direction: column; justify-content: space-between;">
+             <div style="text-align: center; margin-top: 4rem; width: 100%;">
+                 <h2 class="section-header" style="font-size: 140px;">FREEDOM FROM<br>DISCOMFORT.</h2>
+                 <p class="lead" style="margin-top: 4rem; color: var(--crimson);">Your body will reward you with clarity, energy, and freedom.</p>
+             </div>
+             
+             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 4rem; width: 100%;">
+                 <p class="body-text" style="font-weight: 500; color: var(--obsidian); text-align: center; max-width: 1600px;">Physical comfort is not an unattainable luxury reserved for manual laborers or people who work outdoors. It is a direct result of how you manage your body's structural inputs throughout the day.</p>
+                 <p class="body-text" style="font-size: 50px; font-weight: 500; color: var(--obsidian); text-align: center; max-width: 1600px; margin-top: 3rem;">Desk pain occurs when your body adapts to a life of static immobility. The system outlined in this book works because it breaks that cycle by introducing targeted, frequent, and high-quality movement inputs. By dedicating just ten minutes a day to resetting your posture, you change the message your brain sends to your body.</p>
+             </div>
+             
+             <div style="width: 100%; height: 900px; background: var(--oat) url('conclusion-home-office-ambient.jpg') center/contain no-repeat; margin-top: 6rem; margin-bottom: 8rem; border-radius: 4px;" role="img" aria-label="Home office setup"></div>
+
+             <div class="folio" style="position: absolute; bottom: var(--margin-y);">
+                <span>The Desk Reset</span>
+                <span>Conclusion</span>
+                <span>19</span>
+            </div>
+        </div>
+
+        <!-- PAGE 15: BACK COVER -->
+        <div class="page dark" id="p15" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0;">
+             <div style="text-align: center; width: 100%;">
+                 <div style="width: 200px; height: 200px; border: 8px solid var(--crimson); border-radius: 50%; margin: 0 auto 6rem auto; display: flex; align-items: center; justify-content: center;">
+                    <span style="font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 80px; color: var(--oat);">R</span>
+                 </div>
+                 <h1 class="neural-title" style="font-size: 160px; color: var(--oat); margin-bottom: 2rem;">THE DESK RESET</h1>
+                 <p style="font-family: 'Plus Jakarta Sans'; font-size: 40px; color: var(--crimson); letter-spacing: 0.2em; text-transform: uppercase;">Fix Desk Pain</p>
+             </div>
+        </div>
+
+    </div>
+
+    <!-- Export Script -->
+    <script>
+        async function exportPNGs() {
+            const toolbar = document.querySelector('.toolbar');
+            const editor = document.querySelector('.ebook-editor');
+            toolbar.style.display = 'none';
+
+            try {
+                const JSZip = window.JSZip;
+                const zip = new JSZip();
+
+                // Clone the editor off-screen at full res — visible page never touched
+                const clone = editor.cloneNode(true);
+                clone.id = 'export-clone';
+                clone.style.cssText = 'position:fixed;top:-9999px;left:-9999px;zoom:1;gap:0;';
+                document.body.appendChild(clone);
+
+                const clonePages = clone.querySelectorAll('.page');
+
+                // Sequential page names matching their content
+                const names = [
+                    '01 - Cover',
+                    '02 - Contents',
+                    '03 - The Evidence',
+                    '04 - The Reality',
+                    '05 - The Mechanism',
+                    '06 - Applying The Mechanism',
+                    '07 - Why Stretching Fails',
+                    '08 - Breaking The Loop',
+                    '09 - The Reset Framework',
+                    '10 - Morning Reset',
+                    '11 - Midday Reset',
+                    '12 - Evening Reset',
+                    '13 - The Desk Setup',
+                    '14 - Standing Is Not Moving',
+                    '15 - The 90 Minute Rule',
+                    '16 - Sleep Alignment',
+                    '17 - Weekly Progress Tracker',
+                    '18 - Common Questions',
+                    '19 - The 30-Day Plan',
+                    '20 - Consistency Is The Only Goal',
+                    '21 - Freedom From Discomfort',
+                    '22 - The Desk Reset'
+                ];
+
+                for (let i = 0; i < clonePages.length; i++) {
+                    const canvas = await html2canvas(clonePages[i], {
+                        scale: 1,
+                        useCORS: true,
+                        allowTaint: false,
+                        logging: false
+                    });
+
+                    // toBlob = binary, no string length limit like toDataURL
+                    const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                    const fileName = (names[i] || 'Page ' + String(i + 1).padStart(2, '0')) + '.png';
+                    zip.file(fileName, blob);
+                }
+
+                document.body.removeChild(clone);
+
+                // Generate ZIP and trigger download
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                const url = URL.createObjectURL(zipBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'The_Desk_Reset_Pages.zip';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                toolbar.style.display = 'flex';
+            } catch (e) {
+                const clone = document.getElementById('export-clone');
+                if (clone) document.body.removeChild(clone);
+                toolbar.style.display = 'flex';
+                alert('Export failed: ' + e.message);
+            }
+        }
+    </script>
+</body>
+</html>

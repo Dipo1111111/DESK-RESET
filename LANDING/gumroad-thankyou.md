@@ -10,7 +10,7 @@ Paste this into your Gumroad product's "Thank You" / download page section.
 
 Your download is ready below. Open it, read it, and start your first 10-minute reset today.
 
-[DOWNLOAD YOUR GUIDE]
+DOWNLOAD YOUR GUIDE WITH THE LINK ABOVE
 
 ---
 
